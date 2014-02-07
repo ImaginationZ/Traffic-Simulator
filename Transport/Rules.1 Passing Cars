@@ -1,0 +1,19 @@
+Rules:
+
+%a rule that requires drivers to drive in the right-most lane unless they are passing another vehicle, in which case they move one lane to the left, pass, and return to their former travel lane. 
+
+| CAR3 |      |
+|      | CAR1 |
+|      |      |
+|      | CAR2 |
+
+(Limit1 < Limit2; Limit3 is setted appropriately.)
+
+1.Drivers drive in the right-most lane.
+2.When the distance between CAR1 and CAR2 is less than SafetyDistance:
+		if Speed Difference < Limit1, CAR2 decelerates;
+		if Limit1 < Speed Difference < Limit2, CAR2 moves to the one lane on the left, accelerates and passes CAR1;
+		if Speed Difference > Limit2, CAR2 run into CAR1, an accident happens.
+3.If the lane on the left has a CAR3, compare the speed of CAR2 and CAR3:
+		if Speed Difference < Limit3, CAR2 decelerates;
+		if Speed Difference > Limit3, CAR2 run into CAR3, an accident happens.
