@@ -71,8 +71,11 @@ int car::getMaxVelosity(){
     return maxVelosity;
 }
 
+void car::setMaxVelosity(int arg){
+    maxVelosity = arg;
+}
+
 void car::setVelosity(int arg){
-    if (arg > maxVelosity) maxVelosity = arg;
     velosity = arg;
 }
 

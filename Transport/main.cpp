@@ -13,7 +13,11 @@
 #include "cmath"
 using namespace std;
 
-static int crashNum = 0;
+static int totalCar = 0;
+int speedLimit = 20;
+int sigma = 10;
+int times = 100000;
+int interval = 10;
 
 double gaussrand(){
     static double V1,
@@ -37,12 +41,10 @@ double gaussrand(){
     return X;
 }
 
-double rrrrr(){
-    int speedLimit = 30;
-    int sigma = 10;
-    int ans;
-    while(abs(ans = gaussrand()*sigma) > sigma){}
-    return ans + speedLimit;
+int rrrrr(){
+    double ans;
+    while(abs(ans = gaussrand()*sigma) > 0.5 * sigma){}
+    return (int)ans + speedLimit;
 }
 int main(int argc, const char * argv[])
 {
@@ -51,9 +53,11 @@ int main(int argc, const char * argv[])
     fout.open("output.txt");
     road* way = new road(10,100000);
     way->addCar(1, 0, rrrrr());
-    for (int i=1; i<5000; ++i) {
-        if((i+rand()%2)%5 == 0)
+    for (int i=1; i<times; ++i) {
+        if((i+rand()%3)%interval == 0){
             way->addCar(1, 0, rrrrr());
+            totalCar++;
+        }
         way->update();
         /*
         cout << way->getCarNum()<<' ';
@@ -66,6 +70,23 @@ int main(int argc, const char * argv[])
         cout << endl;
         */
     }
+    for (int i=0; i<way->getCarNum(); ++i){
+        if(!way->getCar(i)->cleared)
+            way->remove(way->getCar(i));
+    }
+    cout << "speedlimit: " << speedLimit*2 << endl;
+    cout << "safedistance: "<< 50 << endl;
+    cout << "totalCar: " << totalCar <<endl;
+    cout << "Average speed: " << (double) way->totalV / totalCar * 2 << endl;
+    cout << "times: " << times << endl;
+    cout << "time interval: " << interval << endl;
+    cout << "totalCrash: " << way->crashNum << endl;
+    cout << "totalChange: "<< way->totalChange <<endl;
+    cout << "totalDecelerate: "<< way->diffV*2 <<endl;
+    cout << "passed p1: " << way->n1 <<endl;
+    cout << "passed p2: " << way->n2 <<endl;
+    cout << "passed p3: " << way->n3 <<endl;
+
     
     return 0;
 }

@@ -47,6 +47,7 @@ public:
     int getVelosity();
     double askVelosity(); // miles per minutes
     int getMaxVelosity();
+    void setMaxVelosity(int arg);
     void setVelosity(int arg);
     void crash(int arg);
     bool askCrashed();
@@ -58,7 +59,7 @@ public:
     car();
     void clear();
     car(int argId, int argLength, int argLane, int argVelosity):cleared(0),
-    id(argId),length(argLength),lane(argLane),velosity(argVelosity),changes(0),position(0),countdown(0),lastPass(NULL),crashed(0){};
+    id(argId),length(argLength),lane(argLane),velosity(argVelosity),maxVelosity(argVelosity),changes(0),position(0),countdown(0),lastPass(NULL),crashed(0){};
     
 };
 

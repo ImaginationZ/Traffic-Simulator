@@ -17,11 +17,9 @@
 #include "ctime"
 #include "cstdlib"
 #include "set"
-
+#include "fstream"
 
 using namespace std;
-
-static int crashNum = 0;
 
 
 class rightRule{
@@ -29,13 +27,11 @@ private:
     
     double mTime; // min simulation time
     int cell; // min simulation length
-    int safeDist = 50; // a mulitipal of cell-length
-    int limit1;
-    int limit2;
-    int limit3;
+    int safeDist = 25; // a mulitipal of cell-length
     int crashTime=1;
-    double lamda=0;
+    double lamda=0.1;
     int changeTime=1;
+    int speedlimit = 20;
     
     struct cmp{
         bool operator()(car* a,car *b){
@@ -43,10 +39,12 @@ private:
         }
     };
     bool askChange(int argV, int argP){
-        double p = (double)argV / 20 * std::exp(-argP/(double)(20 - argP));
+        return 1;
+        double p = (double)argV/10;
         return (std::rand() < RAND_MAX * p);
     };
     bool askDecelerate(int argV){
+        return 1;
         return (std::rand() < RAND_MAX * std::exp(-lamda * argV ));
     }
 public:
@@ -57,25 +55,28 @@ public:
             carQueue[i].empty();
             carList[i].empty();
         }
-        int *tmpV = new int[arg->getCarNum()];
         for (int i=0; i<arg->getCarNum(); ++i) {
             car* tmp = arg->getCar(i);
-            //process crashed
-            if(tmp->askCrashed()){
-                if(tmp->setCountDown() <=0 ){
-                    arg->getId(tmp->getLane(), tmp->getPosition()) = -1;
-                    arg->remove(tmp);
-                }
-            }
             // get back
-            else if(tmp->getLane()>0 && !tmp->askChanging() && tmp->getLastPass()!=NULL){
+            if(tmp->getLane()>0 && !tmp->askChanging() && tmp->getLastPass()!=NULL){
                 if(tmp->getPosition() > tmp->getLastPass()->getPosition() &&
                    arg->getId(tmp->getLane()-1, tmp->getPosition())==-1 && arg->getId(tmp->getLane()-1, tmp->getPosition()-1)==-1 &&
                 arg->getId(tmp->getLane()-1, tmp->getPosition()+1)==-1
                    ){
-                    arg->getId(tmp->getLane(), tmp->getPosition()) = -1;
-                    tmp->setLane(tmp->getLane()-1);
-                    arg->getId(tmp->getLane(), tmp->getPosition()) = tmp->getId();
+                    bool flag = 1;
+                    for (int k=0; k<safeDist; ++k) {
+                        if(arg->getId(tmp->getLane()-1, tmp->getPosition()+k)!=-1 || arg->getId(tmp->getLane()+1, tmp->getPosition()-k)!=-1){
+                            flag = 0;
+                            break;
+                        }
+                    }
+                    if(flag){
+                        arg->getId(tmp->getLane(), tmp->getPosition()) = -1;
+                        tmp->setLane(tmp->getLane()-1);
+                        arg->getId(tmp->getLane(), tmp->getPosition()) = tmp->getId();
+
+                    }
+                    
                 }
             }
             
@@ -83,11 +84,23 @@ public:
             else if(tmp->askChanging()){
                 if(tmp->setCountDown() <= 0){
                     if(arg->getId(tmp->getLane()+1, tmp->getPosition()) == -1){
-                        tmp->quitChange();
-                        arg->getId(tmp->getLane(), tmp->getPosition()) = -1;
-                        tmp->setLane(tmp->getLane()+1);
-                        arg->getId(tmp->getLane(), tmp->getPosition()) = tmp->getId();
-
+                        bool flag = 1;
+                        for (int k=0; k<safeDist; ++k) {
+                            if(arg->getId(tmp->getLane()+1, tmp->getPosition()+k)!=-1 || arg->getId(tmp->getLane()+1, tmp->getPosition()-k)!=-1){
+                                flag = 0;
+                                break;
+                            }
+                        }
+                        if(flag){
+                            tmp->quitChange();
+                            arg->getId(tmp->getLane(), tmp->getPosition()) = -1;
+                            tmp->setLane(tmp->getLane()+1);
+                            arg->getId(tmp->getLane(), tmp->getPosition()) = tmp->getId();
+                            ++arg->totalChange;
+                            /*
+                            cout << tmp->getId()<<" changed to lane "<<tmp->getLane()<<endl;
+                             */
+                        }
                     }
                     else{
                         tmp->quitChange();
@@ -96,10 +109,6 @@ public:
             }
             //get order
             carList[tmp->getLane()].insert(tmp);
-            //get velosity
-            tmpV[i] = tmp->getVelosity();
-            if (tmp->getVelosity() > 0 && !tmp->askCrashed())
-                carQueue[tmp->getLane()].push(tmp);
         }
         for (int i=0; i<arg->getLanes()-1; ++i) {
             for (std::set<car*,cmp>::iterator iter = carList[i].begin(); iter != carList[i].end();) {
@@ -109,45 +118,21 @@ public:
                 car* now = *iter;
                 int diffV = now->getVelosity() - front->getVelosity();
                 int diffP = front->getPosition() - now->getPosition();
-                if(diffV < 0){}
-                else if(diffP > safeDist){}
-                else if(askChange(diffV, diffP)){
-                    now->setChange(changeTime, front);
+                if(askChange(diffV, diffP)){
+                    now->setChange(1, front);
                 }
-                else if(askDecelerate(now->getVelosity())){
-                    now->setVelosity(front->getVelosity());
+                if(diffV >= diffP){
+                    now->setVelosity(front->getVelosity()-1);
                 }
             }
         }
-        for (int i=0; i<arg->getLanes(); ++i){
-            while(carQueue[i].size()){
-                car* now = carQueue[i].front();
-                if(tmpV[now->getId()]>0){
-                    int id;
-                    if((id = arg->getId(now->getLane(), now->getPosition()+1)) != -1){
-                        car* front = arg->getCar(id);
-                        tmpV[now->getId()] = 0;
-                        tmpV[id] = 0;
-                        front->crash(crashTime);
-                        now->crash(crashTime);
-                        ++crashNum;
-                        cout << crashNum << ": " <<now->getId() << " crash " << front->getId()<<endl;
-                    }
-                    else {
-                        tmpV[now->getId()]--;
-                        arg->getId(now->getLane(), now->getPosition()) = -1;
-                        now->setPosition(now->getPosition()+1);
-                        arg->getId(now->getLane(), now->getPosition()) = now->getId();
-                        if(now->getPosition() >= arg->getLength() - 2){
-                            arg->remove(now);
-                            tmpV[now->getId()] = 0;
-                        }
-                    }
-                }
-                carQueue[i].pop();
-                if(tmpV[now->getId()] > 0)
-                    carQueue[i].push(now);
-            }
+        for (int i=0; i<arg->getCarNum() ; ++i){
+            car* tmp = arg->getCar(i);
+            arg->getId(tmp->getLane(), tmp->getPosition())= -1;
+            tmp->setPosition(tmp->getPosition()+tmp->getVelosity());
+            arg->getId(tmp->getLane(), tmp->getPosition())= i;
+            if(tmp->getVelosity()<tmp->getMaxVelosity())
+                tmp->setVelosity(tmp->getVelosity()+1);
         }
     };
 };

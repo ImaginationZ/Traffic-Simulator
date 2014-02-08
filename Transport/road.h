@@ -26,6 +26,13 @@ private:
     int trashNum;
     
 public:
+    
+    int crashNum = 0;
+    int totalChange = 0;
+    int n1=0, n2=0, n3=0;
+    int diffV = 0;
+    long long totalV = 0;
+    
     car* getCar(int arg);
     int getCarNum();
     int getLanes();

@@ -8,6 +8,12 @@
 
 #include "road.h"
 #include "rule.h"
+#include "fstream"
+#include<iomanip>
+using namespace std;
+
+ofstream fout("output.txt");
+
 
 car* road::getCar(int arg){
     return carPool[arg];
@@ -33,12 +39,14 @@ int road::addCar(int argLength, int argLane, int argVelosity){
         carPool[p]->setLength(argLength);
         carPool[p]->setLane(argLane);
         carPool[p]->setVelosity(argVelosity);
+        carPool[p]->setMaxVelosity(argVelosity);
         carPool[p]->setPosition(0);
         carPool[p]->cleared = 0;
         return p;
     }
     else{
         carPool.push_back(new car(carNum,argLength, argLane, argVelosity));
+
         carNum = (int)carPool.size();
         return carNum-1;
     }
@@ -46,6 +54,8 @@ int road::addCar(int argLength, int argLane, int argVelosity){
 
 void road::remove(car* arg){
     id[arg->getLane()][arg->getPosition()] = -1;
+    totalV += arg->getVelosity();
+    //fout << arg->getMaxVelosity()*2 << ' '<<arg->getVelosity()*2 << endl;
     carTrash.push(arg->getId());
     arg->cleared = 1;
     arg->clear();
