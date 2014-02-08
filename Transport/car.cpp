@@ -8,7 +8,6 @@
 
 #include "car.h"
 #include "rule.h"
-#include "constants.h"
 
 int car::getId(){
     return id;
@@ -52,6 +51,10 @@ int car::getChanges(){
     return changes;
 }
 
+car* car::getLastPass(){
+    return lastPass;
+}
+
 int car::getPosition(){
     return position;
 }
@@ -64,10 +67,6 @@ int car::getVelosity(){
     return velosity;
 }
 
-double car::askVelosity(){
-    return velosity * cell / mTime;
-}
-
 int car::getMaxVelosity(){
     return maxVelosity;
 }
@@ -77,10 +76,43 @@ void car::setVelosity(int arg){
     velosity = arg;
 }
 
-void car::crash(){
+void car::crash(int arg){
     crashed = true;
+    countdown = arg;
 }
 
 bool car::askCrashed(){
     return crashed;
+}
+
+bool car::askChanging(){
+    return changing;
+}
+
+void car::setChange(int arg, car* argLastPass){
+    if(changing) return;
+    changing = true;
+    lastPass = argLastPass;
+    countdown = arg;
+}
+
+void car::quitChange(){
+    ++changes;
+    changing = false;
+}
+
+int car::setCountDown(){
+    countdown--;
+    return countdown;
+}
+
+void car::clear(){
+    velosity = 0;
+    maxVelosity = 0;
+    changing = 0;
+    changes = 0;
+    position = 0;
+    countdown = 0;
+    crashed = 0;
+    lastPass = NULL;
 }

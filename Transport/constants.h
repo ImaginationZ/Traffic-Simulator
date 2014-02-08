@@ -9,14 +9,13 @@
 #ifndef Transport_constants_h
 #define Transport_constants_h
 
-
-
 double mTime; // min simulation time
 int cell; // min simulation length
-int safeDist; // a mulitipal of cell-length
+int safeDist = 100; // a mulitipal of cell-length
 int limit1;
 int limit2;
 int limit3;
 int crackTime;
+double lamda=0;
 
 #endif

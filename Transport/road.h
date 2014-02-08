@@ -11,21 +11,27 @@
 
 #include "vector"
 #include "car.h"
+#include "queue"
 #include <iostream>
 
 class road{
 private:
     int carNum;
     std::vector<car*> carPool;
+    std::queue<int> carTrash;
     int lanes;
     int length;
     int error;
-    int id[10][10000];
+    int id[10][100000];
+    int trashNum;
     
 public:
     car* getCar(int arg);
     int getCarNum();
+    int getLanes();
+    int getLength();
     int addCar(int argLength, int argLane, int argVelosity);
+    void remove(car* arg);
     void update();
     road(int argLanes, int argLength);
     int& getId(int argLane, int argLength);
