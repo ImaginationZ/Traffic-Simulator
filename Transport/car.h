@@ -31,6 +31,9 @@ private:
     
 public:
     bool cleared;
+    int time=0;
+    int lowTime=0;
+    
     int getId();
     void setId(int arg);
     //road* getRoad();
@@ -52,7 +55,7 @@ public:
     void crash(int arg);
     bool askCrashed();
     bool askChanging();
-    void setChange(int arg, car* argLastPass);
+    void setChange(car* arg);
     void quitChange();
     int setCountDown();
     

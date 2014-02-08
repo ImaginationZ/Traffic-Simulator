@@ -22,7 +22,7 @@ private:
     int lanes;
     int length;
     int error;
-    int id[10][100000];
+    int id[4][10000000];
     int trashNum;
     
 public:

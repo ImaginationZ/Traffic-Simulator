@@ -92,16 +92,15 @@ bool car::askChanging(){
     return changing;
 }
 
-void car::setChange(int arg, car* argLastPass){
-    if(changing) return;
+void car::setChange(car* arg){
     changing = true;
-    lastPass = argLastPass;
-    countdown = arg;
+    lastPass = arg;
 }
 
 void car::quitChange(){
     ++changes;
     changing = false;
+    lastPass = NULL;
 }
 
 int car::setCountDown(){

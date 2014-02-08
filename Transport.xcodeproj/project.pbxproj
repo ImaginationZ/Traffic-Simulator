@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		ADBC8F9118A64D92009B8FB5 /* rule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ADBC8F9018A64D92009B8FB5 /* rule.cpp */; };
 		ADBE909018A47D2200AAA3BF /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ADBE908F18A47D2200AAA3BF /* main.cpp */; };
 		ADBE909218A47D2200AAA3BF /* Transport.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = ADBE909118A47D2200AAA3BF /* Transport.1 */; };
 		ADBE909A18A47D6700AAA3BF /* car.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ADBE909818A47D6700AAA3BF /* car.cpp */; };
@@ -28,6 +29,7 @@
 
 /* Begin PBXFileReference section */
 		AD906DAF18A4D7D600FDABAF /* constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = constants.h; sourceTree = "<group>"; };
+		ADBC8F9018A64D92009B8FB5 /* rule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rule.cpp; sourceTree = "<group>"; };
 		ADBE908C18A47D2200AAA3BF /* Transport */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Transport; sourceTree = BUILT_PRODUCTS_DIR; };
 		ADBE908F18A47D2200AAA3BF /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		ADBE909118A47D2200AAA3BF /* Transport.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Transport.1; sourceTree = "<group>"; };
@@ -73,6 +75,7 @@
 				ADBE908F18A47D2200AAA3BF /* main.cpp */,
 				ADBE909818A47D6700AAA3BF /* car.cpp */,
 				ADBE909C18A4836E00AAA3BF /* rule.h */,
+				ADBC8F9018A64D92009B8FB5 /* rule.cpp */,
 				AD906DAF18A4D7D600FDABAF /* constants.h */,
 				ADBE909F18A48B2300AAA3BF /* road.cpp */,
 				ADBE90A018A48B2300AAA3BF /* road.h */,
@@ -134,6 +137,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				ADBE909A18A47D6700AAA3BF /* car.cpp in Sources */,
+				ADBC8F9118A64D92009B8FB5 /* rule.cpp in Sources */,
 				ADBE909018A47D2200AAA3BF /* main.cpp in Sources */,
 				ADBE90A118A48B2300AAA3BF /* road.cpp in Sources */,
 			);
