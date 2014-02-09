@@ -40,6 +40,7 @@ public:
     int addCar(int argLength, int argLane, int argVelosity);
     void remove(car* arg);
     void update();
+    void clear();
     road(int argLanes, int argLength);
     int& getId(int argLane, int argLength);
 };

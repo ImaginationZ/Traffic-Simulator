@@ -24,13 +24,7 @@ using namespace std;
 class rightRule{
 private:
     
-    double mTime; // min simulation time
-    int cell; // min simulation length
     int safeDist = 50; // a mulitipal of cell-length
-    int crashTime=1;
-    double lamda=0.1;
-    int changeTime=1;
-    int speedlimit = 20;
     
     struct cmp{
         bool operator()(car* a,car *b){
@@ -38,14 +32,63 @@ private:
         }
     };
     bool askChange(int argV, int argP){
-        double p = (double)argV/safeDist*exp(-argP/safeDist-argP);
+        double p = 1-5*(double)argP/argV/safeDist;
+        return (std::rand() < RAND_MAX * p);
+    };
+    
+public:
+        rightRule(road*);
+};
+
+class middleRule{
+private:
+    
+    double mTime; // min simulation time
+    int cell; // min simulation length
+    int safeDist = 200; // a mulitipal of cell-length
+    int crashTime=1;
+    double lamda=0.1;
+    int changeTime=1;
+    
+    struct cmp{
+        bool operator()(car* a,car *b){
+            return a->getPosition() > b->getPosition();
+        }
+    };
+    bool askChange(int argV, int argP){
+        double p = 1-5*(double)argP/argV/safeDist;
         return (std::rand() < RAND_MAX * p);
     };
     bool askDecelerate(int argV){
         return (std::rand() < RAND_MAX * std::exp(-lamda * argV ));
     }
 public:
-        rightRule(road*);
+    middleRule(road*);
+};
+
+
+class doubleRule{
+private:
+    
+    double mTime; // min simulation time
+    int cell; // min simulation length
+    int safeDist = 50; // a mulitipal of cell-length
+    int crashTime=1;
+    double lamda=0.1;
+    int changeTime=1;
+    
+    struct cmp{
+        bool operator()(car* a,car *b){
+            return a->getPosition() > b->getPosition();
+        }
+    };
+    bool askChange(int argV, int argP){
+        double p = 1-5*(double)argP/argV/safeDist;
+        return (std::rand() < RAND_MAX * p);
+    };
+
+public:
+    doubleRule(road*);
 };
 
 #endif /* defined(__Transport__rule__) */

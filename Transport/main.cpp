@@ -13,11 +13,11 @@
 #include "cmath"
 using namespace std;
 
-static int totalCar = 0;
-int speedLimit = 25;
-int sigma = 5;
-int times = 10000;
-int interval = 5;
+int speedLimit = 30;
+int sigma = 10;
+int times = 20000;
+int interval = 20;
+ofstream fout("output.txt");
 
 double gaussrand(){
     static double V1,
@@ -46,47 +46,68 @@ int rrrrr(){
     while(abs(ans = gaussrand()*sigma) > sigma){}
     return (int)ans + speedLimit;
 }
-int main(int argc, const char * argv[])
-{
-    srand(time(0));
-    fstream fout;
-    fout.open("output.txt");
-    road* way = new road(2,10000000);
+
+void test(road *way){
+    way->clear();
+    int totalCar = 0;
+
     for (int i=1; i<times; ++i) {
-        if((i+rand()%3)%interval == 0){
-            way->addCar(1, 0, rrrrr());
+        if((i+rand()%3)%(interval+1+(int)(interval*0.1)) == 0){
+            way->addCar(1, rand()%2, rrrrr());
             totalCar++;
         }
         way->update();
         /*
-        cout << way->getCarNum()<<' ';
-        for (int j=0; j<way->getCarNum(); ++j) {
-            cout << j<<":"<<way->getCar(j)->getLane() <<':'<<way->getCar(j)->getPosition() <<' ';
-        }
-        cout << endl;
-        */
+         cout << way->getCarNum()<<' ';
+         for (int j=0; j<way->getCarNum(); ++j) {
+         cout << j<<":"<<way->getCar(j)->getLane() <<':'<<way->getCar(j)->getPosition() <<' ';
+         }
+         cout << endl;
+         */
     }
-    double U,D,d,m;
-    for (int j=0; j<way->getCarNum(); ++j) {
-        U += way->getCar(j)->lowTime;
-        D += way->getCar(j)->time;
+    double U=0,D=0,d=0,m=0;
+    for (int j=0; j<way->getCarNum(); ++j){
+        D += (double)way->getCar(j)->lowTime/(double)way->getCar(j)->time;
         d += (double)way->getCar(j)->getPosition() / (double) way->getCar(j)->time;
         m += way->getCar(j)->getMaxVelosity();
     }
-    cout << "speedlimit: " << speedLimit << endl;
-    cout << "safedistance: "<< 50 << endl;
-    cout << "totalCar: " << totalCar <<endl;
-    cout << "times: " << times << endl;
-    cout << "time interval: " << interval << endl;
-    cout << "Average Max speed: " << m / way->getCarNum() << endl;
-    cout << "Average speed: " << d / way->getCarNum() << endl;
-    cout << "totalChange: "<< way->totalChange <<endl;
-    cout << "totalDecelerate: "<< way->diffV <<endl;
-    cout << "hard decelerate Num: "<< way->crashNum <<endl;
-    cout << "totalDelay Rate: "<<(double) U / (double)D << endl;
-
-
-    
+    fout /*<< "speedlimit: " */<< speedLimit <<' ';
+    fout /*<< "safedistance: "*/<< 50 << ' ';
+    fout /*<< "totalCar: " */<< (int)(1.2*totalCar) <<' ';
+    fout /*<< "times: " */<< times << ' ';
+    fout /*<< "time interval: " */<< interval << ' ';
+    fout /*<< "Average Max speed: " */<< m / way->getCarNum() << ' ';
+    fout /*<< "Average speed: " */<< d / way->getCarNum() << ' ';
+    fout /*<< "totalChange: "*/<< way->totalChange <<' ';
+    fout /*<< "totalDecelerate: "*/<< way->diffV <<' ';
+    fout /*<< "hard decelerate Num: "*/<< way->crashNum <<' ';
+    fout /*<< "totalDelay Rate: "*/<< D / way->getCarNum()<< '*';
+}
+int main(int argc, const char * argv[])
+{
+    srand(time(0));
+    road* way = new road(3,10000000);
+    for (speedLimit=25; speedLimit<50; speedLimit+=5) {
+        interval = 5;
+        test(way);
+        cout << speedLimit <<' '<<interval<< endl;
+        interval = 10;
+        test(way);
+                cout << speedLimit <<' '<<interval<< endl;
+        
+        interval = 20;
+        test(way);
+        
+                cout << speedLimit <<' '<<interval<< endl;
+        interval = 30;
+        test(way);
+        
+                cout << speedLimit <<' '<<interval<< endl;
+        interval = 60;
+        test(way);
+                cout << speedLimit <<' '<<interval<< endl;
+        
+    }
     return 0;
 }
 

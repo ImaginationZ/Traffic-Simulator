@@ -52,3 +52,20 @@ lanes(argLanes),length(argLength),carNum(0),trashNum(0){
 int& road::getId(int argLane, int argLength){
     return id[argLane][argLength];
 }
+
+void road::clear(){
+    carNum=0;
+    crashNum=0;
+    trashNum=0;
+    totalChange=0;
+    diffV =0;
+    totalV = 0;
+    carPool.clear();
+    carTrash.empty();
+    for (int i=0; i<lanes; ++i) {
+        for (int j=0; j<length; ++j) {
+            id[i][j] = -1;
+        }
+    }
+
+}
